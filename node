@@ -1,0 +1,30 @@
+var http = require("http");
+var array = [];
+
+http.createServer(function(req, res) {
+    if (req.method.toString() === "POST" && req.url === "/message") {
+        var body = "";
+        req.on("data", function(chunk) {
+            body += chunk.toString();
+        })
+        req.on("end", function() {
+            console.log("logging body")
+            var decoded = JSON.parse(body)
+            console.log(decoded)
+            console.log("ended, now sending hello world")
+            res.writeHead(200)
+            console.log("length is now " + array.length)
+            var length = array.length
+            array[length] = [];
+            array[length][0] = decoded["player"];
+            array[length][1] = decoded["value"];
+            console.log(array)
+            res.end(JSON.stringify(array))
+        })
+    } else {
+        var encode = JSON.stringify(array)
+        res.writeHead(200)
+        res.end(encode)
+        console.log("sent array: " + array)
+    }
+}).listen(8080)
